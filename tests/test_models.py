@@ -62,5 +62,3 @@ class TestCustomer(TestCase):
         self.assertEqual(data.email, customer.email)
         self.assertEqual(data.phone_number, customer.phone_number)
         self.assertEqual(data.member_since, customer.member_since)
-
-    # Todo: Add your test cases here...
