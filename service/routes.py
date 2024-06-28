@@ -81,7 +81,6 @@ def get_customer(customer_id):
     This endpoint will read a customer based on its id
     """
     app.logger.info("Request to Retrieve a Customer with id [%s]...", customer_id)
-    check_content_type("application/json")
     
     customer = Customer.find(customer_id)
     if not customer:
