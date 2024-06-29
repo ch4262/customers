@@ -72,6 +72,24 @@ def create_customers():
     return jsonify(customer.serialize()), status.HTTP_201_CREATED, {"Location": location_url}
 
 ######################################################################
+# READ A CUSTOMER
+######################################################################
+@app.route("/customers/<int:customer_id>", methods=["GET"])
+def get_customer(customer_id):
+    """
+    Read a customer
+    This endpoint will read a customer based on its id
+    """
+    app.logger.info("Request to Retrieve a Customer with id [%s]...", customer_id)
+    
+    customer = Customer.find(customer_id)
+    if not customer:
+        abort(status.HTTP_404_NOT_FOUND, f"Customer with id [{customer_id}] not found")
+
+    app.logger.info("Returning customer: %s", customer.name)
+    return jsonify(customer.serialize()), status.HTTP_200_OK
+
+######################################################################
 # Checks the ContentType of a request
 ######################################################################
 

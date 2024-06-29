@@ -87,3 +87,37 @@ class TestYourResourceService(TestCase):
         # self.assertEqual(new_customer["email"], test_customer.email)
         # self.assertEqual(new_customer["phone_number"], test_customer.phone_number)
         # self.assertEqual(new_customer["member_since"], test_customer.member_since.isoformat())
+
+    def test_read_customer(self):
+        """It should read an existing Customer"""
+        test_customer = CustomerFactory()
+        logging.debug("Test Customer: %s", test_customer.serialize())
+        response = self.client.post(BASE_URL, json=test_customer.serialize())
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        # Make sure location header is set
+        location = response.headers.get("Location", None)
+        self.assertIsNotNone(location)
+
+        # Check the data is correct
+        new_customer = response.get_json()
+        self.assertEqual(new_customer["name"], test_customer.name)
+        self.assertEqual(new_customer["address"], test_customer.address)
+        self.assertEqual(new_customer["email"], test_customer.email)
+        self.assertEqual(new_customer["phone_number"], test_customer.phone_number)
+        self.assertEqual(new_customer["member_since"], test_customer.member_since.isoformat())
+        
+        # Retrieve the newly created customer
+        #self.assertEqual(0, new_customer["id"])
+        read_response = self.client.get(f"{BASE_URL}/{int(new_customer['id'])}")
+        self.assertEqual(read_response.status_code, status.HTTP_200_OK)
+        
+        # Validate the data matches
+        retrieved_customer = read_response.get_json()
+        self.assertEqual(retrieved_customer["name"], test_customer.name)
+        self.assertEqual(retrieved_customer["address"], test_customer.address)
+        self.assertEqual(retrieved_customer["email"], test_customer.email)
+        self.assertEqual(retrieved_customer["phone_number"], test_customer.phone_number)
+        self.assertEqual(retrieved_customer["member_since"], test_customer.member_since.isoformat())
+        
+        
