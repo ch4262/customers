@@ -33,8 +33,13 @@ from service.common import status  # HTTP Status Codes
 @app.route("/")
 def index():
     """Root URL response"""
+    app.logger.info("Request for Root URL")
     return (
-        "Reminder: return some useful information in json format about the service here",
+        jsonify(
+            name="Customer Service REST API",
+            version="1.0",
+            paths=url_for("list_customers", _external=True),
+        ),
         status.HTTP_200_OK,
     )
 
@@ -77,6 +82,7 @@ def create_customers():
     )
 
 
+
 ######################################################################
 # READ A CUSTOMER
 ######################################################################
@@ -87,13 +93,13 @@ def get_customer(customer_id):
     This endpoint will read a customer based on its id
     """
     app.logger.info("Request to Retrieve a Customer with id [%s]...", customer_id)
-
     customer = Customer.find(customer_id)
     if not customer:
         abort(status.HTTP_404_NOT_FOUND, f"Customer with id [{customer_id}] not found")
 
     app.logger.info("Returning customer: %s", customer.name)
     return jsonify(customer.serialize()), status.HTTP_200_OK
+
 
 
 ######################################################################
@@ -127,6 +133,25 @@ def update_customers(customer_id):
 
     app.logger.info("Customer with ID: %d updated.", customer.id)
     return jsonify(customer.serialize()), status.HTTP_200_OK
+
+
+############################################################
+# LIST A CUSTOMER
+############################################################
+@app.route("/customers", methods=["GET"])
+def list_customers():
+    """List customers"""
+    app.logger.info("Request for customer list")
+    customers = []
+
+    customers = Customer.all()
+
+    if not customers:
+        abort(status.HTTP_404_NOT_FOUND, "No customers found.")
+
+    results = [customer.serialize() for customer in customers]
+    app.logger.info("Returning %d customers", len(customers))
+    return jsonify(results), status.HTTP_200_OK
 
 
 ######################################################################

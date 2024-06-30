@@ -4,12 +4,12 @@ TestCustomer API Service Test Suite
 
 import os
 import logging
-import datetime
 from unittest import TestCase
 from wsgi import app
 from service.common import status
 from service.models import db, Customer
 from .factories import CustomerFactory
+from datetime import date
 
 DATABASE_URI = os.getenv(
     "DATABASE_URI", "postgresql+psycopg://postgres:postgres@localhost:5432/testdb"
@@ -21,7 +21,7 @@ BASE_URL = "/customers"
 #  T E S T   C A S E S
 ######################################################################
 # pylint: disable=too-many-public-methods
-class TestYourResourceService(TestCase):
+class TestCustomerResource(TestCase):
     """REST API Server Tests"""
 
     @classmethod
@@ -49,6 +49,29 @@ class TestYourResourceService(TestCase):
         """This runs after each test"""
         db.session.remove()
 
+    ############################################################
+    # Utility function to bulk create customers
+    ############################################################
+    def _create_customer(self, count: int = 1) -> list:
+        """Factory method to create customers in bulk"""
+        customers = []
+        for _ in range(count):
+            test_customer = CustomerFactory()
+            response = self.client.post(BASE_URL, json=test_customer.serialize())
+
+            self.assertEqual(
+                response.status_code, status.HTTP_201_CREATED, "Could not create test customer"
+            )
+            new_customer = response.get_json()
+            test_customer.id = new_customer["id"]
+            test_customer.name = new_customer["name"]
+            test_customer.address = new_customer["address"]
+            test_customer.email = new_customer["email"]
+            test_customer.phone_number = new_customer["phone_number"]
+            test_customer.member_since = date.fromisoformat(new_customer["member_since"])
+            customers.append(test_customer)
+        return customers
+
     ######################################################################
     #  P L A C E   T E S T   C A S E S   H E R E
     ######################################################################
@@ -57,6 +80,8 @@ class TestYourResourceService(TestCase):
         """It should call the home page"""
         resp = self.client.get("/")
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        data = resp.get_json()
+        self.assertEqual(data["name"], "Customer Service REST API")
 
     def test_create_customer(self):
         """It should Create a new Customer"""
@@ -110,6 +135,8 @@ class TestYourResourceService(TestCase):
         self.assertEqual(
             new_customer["member_since"], test_customer.member_since.isoformat()
         )
+        self.assertEqual(new_customer["member_since"], test_customer.member_since.isoformat())
+
 
         # Retrieve the newly created customer
         # self.assertEqual(0, new_customer["id"])
@@ -146,3 +173,15 @@ class TestYourResourceService(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         updated_customer = response.get_json()
         self.assertEqual(updated_customer["name"], "Ryan")
+        self.assertEqual(retrieved_customer["member_since"], test_customer.member_since.isoformat())
+
+    # ----------------------------------------------------------
+    # TEST LIST
+    # ----------------------------------------------------------
+    def test_get_customer_list(self):
+        """It should Get a list of Customers"""
+        self._create_customer(5)
+        response = self.client.get(BASE_URL)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        data = response.get_json()
+        self.assertEqual(len(data), 5)

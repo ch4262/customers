@@ -3,10 +3,15 @@ Models for Customer
 
 All of the models are stored in this module
 """
-
+import os
 import logging
 from datetime import date
 from flask_sqlalchemy import SQLAlchemy
+
+# global variables for retry as discussed in lab
+RETRY_COUNT = int(os.environ.get("RETRY_COUNT", 5))
+RETRY_DELAY = int(os.environ.get("RETRY_DELAY", 1))
+RETRY_BACKOFF = int(os.environ.get("RETRY_BACKOFF", 2))
 
 logger = logging.getLogger("flask.app")
 
