@@ -118,3 +118,16 @@ class TestCustomer(TestCase):
         data = "this is not a dictionary"
         customer = Customer()
         self.assertRaises(DataValidationError, customer.deserialize, data)
+
+    def test_read_customer(self):
+        """It should read a Customer"""
+
+        customer = CustomerFactory()
+        customer.create()
+        data = Customer.find(customer.id)
+        self.assertEqual(data.id, customer.id)
+        self.assertEqual(data.name, customer.name)
+        self.assertEqual(data.address, customer.address)
+        self.assertEqual(data.email, customer.email)
+        self.assertEqual(data.phone_number, customer.phone_number)
+        self.assertEqual(data.member_since, customer.member_since)
