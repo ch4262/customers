@@ -48,6 +48,7 @@ def index():
 #  R E S T   A P I   E N D P O I N T S
 ######################################################################
 
+
 ######################################################################
 # CREATE A NEW CUSTOMER
 ######################################################################
@@ -112,6 +113,24 @@ def list_customers():
     results = [customer.serialize() for customer in customers]
     app.logger.info("Returning %d customers", len(customers))
     return jsonify(results), status.HTTP_200_OK
+
+
+############################################################
+# DELETE A CUSTOMER
+############################################################
+@app.route("/customers/<int:customer_id>", methods=["DELETE"])
+def delete_customers(customer_id):
+    """Delete customer"""
+    app.logger.info("Request to Delete a customer with id [%s]..", customer_id)
+
+    customer = Customer.find(customer_id)
+    if customer:
+        app.logger.info("Customer with ID: %d found.", customer.id)
+        customer.delete()
+
+    app.logger.info("Customer with ID: %d delete complete.", customer_id)
+    return {}, status.HTTP_204_NO_CONTENT
+
 
 ######################################################################
 # Checks the ContentType of a request
