@@ -3,10 +3,15 @@ Models for Customer
 
 All of the models are stored in this module
 """
-
+import os
 import logging
 from datetime import date
 from flask_sqlalchemy import SQLAlchemy
+
+# global variables for retry as discussed in lab
+RETRY_COUNT = int(os.environ.get("RETRY_COUNT", 5))
+RETRY_DELAY = int(os.environ.get("RETRY_DELAY", 1))
+RETRY_BACKOFF = int(os.environ.get("RETRY_BACKOFF", 2))
 
 logger = logging.getLogger("flask.app")
 
@@ -29,7 +34,7 @@ class Customer(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(63), nullable=False)
     address = db.Column(db.String(256), nullable=False)
-    email = db.Column(db.String(25), nullable=False)
+    email = db.Column(db.String(), nullable=False)
     phone_number = db.Column(db.String(32), nullable=False)
     member_since = db.Column(db.Date(), nullable=False, default=date.today())
     # Database auditing fields
