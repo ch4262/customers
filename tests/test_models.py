@@ -5,6 +5,7 @@ Test cases for Pet Model
 import os
 import logging
 from unittest import TestCase
+from unittest.mock import patch
 from wsgi import app
 from service.models import Customer, DataValidationError, db
 from .factories import CustomerFactory
@@ -13,6 +14,37 @@ from datetime import date
 DATABASE_URI = os.getenv(
     "DATABASE_URI", "postgresql+psycopg://postgres:postgres@localhost:5432/testdb"
 )
+
+
+######################################################################
+#  B A S E   T E S T   C A S E S
+######################################################################
+class TestCaseBase(TestCase):
+    """Base Test Case for common setup"""
+
+    # pylint: disable=duplicate-code
+    @classmethod
+    def setUpClass(cls):
+        """This runs once before the entire test suite"""
+        app.config["TESTING"] = True
+        app.config["DEBUG"] = False
+        app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URI
+        app.logger.setLevel(logging.CRITICAL)
+        app.app_context().push()
+
+    @classmethod
+    def tearDownClass(cls):
+        """This runs once after the entire test suite"""
+        db.session.close()
+
+    def setUp(self):
+        """This runs before each test"""
+        db.session.query(Customer).delete()  # clean up the last tests
+        db.session.commit()
+
+    def tearDown(self):
+        """This runs after each test"""
+        db.session.remove()
 
 
 ######################################################################
@@ -76,6 +108,15 @@ class TestCustomer(TestCase):
         customers = Customer.all()
         self.assertEqual(len(customers), 5)
 
+    def test_delete_a_customer(self):
+        """It should Delete a Customer"""
+        customer = CustomerFactory()
+        customer.create()
+        self.assertEqual(len(Customer.all()), 1)
+        # delete the pet and make sure it isn't in the database
+        customer.delete()
+        self.assertEqual(len(Customer.all()), 0)
+
     def test_serialize_a_customer(self):
         """It should serialize a Pet"""
         customer = CustomerFactory()
@@ -118,3 +159,31 @@ class TestCustomer(TestCase):
         data = "this is not a dictionary"
         customer = Customer()
         self.assertRaises(DataValidationError, customer.deserialize, data)
+
+
+######################################################################
+#  T E S T   E X C E P T I O N   H A N D L E R S
+######################################################################
+class TestExceptionHandlers(TestCaseBase):
+    """Pet Model Exception Handlers"""
+
+    @patch("service.models.db.session.commit")
+    def test_create_exception(self, exception_mock):
+        """It should catch a create exception"""
+        exception_mock.side_effect = Exception()
+        customer = CustomerFactory()
+        self.assertRaises(DataValidationError, customer.create)
+
+    @patch("service.models.db.session.commit")
+    def test_update_exception(self, exception_mock):
+        """It should catch a update exception"""
+        exception_mock.side_effect = Exception()
+        customer = CustomerFactory()
+        self.assertRaises(DataValidationError, customer.update)
+
+    @patch("service.models.db.session.commit")
+    def test_delete_exception(self, exception_mock):
+        """It should catch a delete exception"""
+        exception_mock.side_effect = Exception()
+        customer = CustomerFactory()
+        self.assertRaises(DataValidationError, customer.delete)
