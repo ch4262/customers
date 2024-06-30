@@ -75,7 +75,9 @@ class TestYourResourceService(TestCase):
         self.assertEqual(new_customer["address"], test_customer.address)
         self.assertEqual(new_customer["email"], test_customer.email)
         self.assertEqual(new_customer["phone_number"], test_customer.phone_number)
-        self.assertEqual(new_customer["member_since"], test_customer.member_since.isoformat())
+        self.assertEqual(
+            new_customer["member_since"], test_customer.member_since.isoformat()
+        )
 
         # TODO: Uncomment this code when get_customers is implemented
         # Check that the location header was correct
@@ -105,19 +107,42 @@ class TestYourResourceService(TestCase):
         self.assertEqual(new_customer["address"], test_customer.address)
         self.assertEqual(new_customer["email"], test_customer.email)
         self.assertEqual(new_customer["phone_number"], test_customer.phone_number)
-        self.assertEqual(new_customer["member_since"], test_customer.member_since.isoformat())
-        
+        self.assertEqual(
+            new_customer["member_since"], test_customer.member_since.isoformat()
+        )
+
         # Retrieve the newly created customer
-        #self.assertEqual(0, new_customer["id"])
+        # self.assertEqual(0, new_customer["id"])
         read_response = self.client.get(f"{BASE_URL}/{int(new_customer['id'])}")
         self.assertEqual(read_response.status_code, status.HTTP_200_OK)
-        
+
         # Validate the data matches
         retrieved_customer = read_response.get_json()
         self.assertEqual(retrieved_customer["name"], test_customer.name)
         self.assertEqual(retrieved_customer["address"], test_customer.address)
         self.assertEqual(retrieved_customer["email"], test_customer.email)
         self.assertEqual(retrieved_customer["phone_number"], test_customer.phone_number)
-        self.assertEqual(retrieved_customer["member_since"], test_customer.member_since.isoformat())
-        
-        
+        self.assertEqual(
+            retrieved_customer["member_since"], test_customer.member_since.isoformat()
+        )
+
+    # ----------------------------------------------------------
+    # TEST UPDATE
+    # ----------------------------------------------------------
+    def test_update_customer(self):
+        """It should Update an existing Customer"""
+        # create a customer to update
+        test_customer = CustomerFactory()
+        response = self.client.post(BASE_URL, json=test_customer.serialize())
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        # update the customer
+        new_customer = response.get_json()
+        logging.debug(new_customer)
+        new_customer["name"] = "Ryan"
+        response = self.client.put(
+            f"{BASE_URL}/{new_customer['id']}", json=new_customer
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        updated_customer = response.get_json()
+        self.assertEqual(updated_customer["name"], "Ryan")

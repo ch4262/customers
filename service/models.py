@@ -29,7 +29,7 @@ class Customer(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(63), nullable=False)
     address = db.Column(db.String(256), nullable=False)
-    email = db.Column(db.String(25), nullable=False)
+    email = db.Column(db.String(63), nullable=False)
     phone_number = db.Column(db.String(32), nullable=False)
     member_since = db.Column(db.Date(), nullable=False, default=date.today())
     # Database auditing fields
