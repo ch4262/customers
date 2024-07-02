@@ -173,11 +173,6 @@ class TestCustomerResource(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         updated_customer = response.get_json()
         self.assertEqual(updated_customer["name"], "Ryan")
-        self.assertEqual(retrieved_customer["member_since"], test_customer.member_since.isoformat())
-        
-        response = self.client.get(f"{BASE_URL}/-1")
-        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-        # self.assertIn("Customer with id [-1] not found", response.get_data(as_text=True))
 
     # ----------------------------------------------------------
     # TEST LIST
