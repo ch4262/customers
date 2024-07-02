@@ -1,35 +1,35 @@
-# Customers REST API
+# Customers API
 
 ## Introduction
-This is the customers API. The customer schema is as follows: name, userID, email, address, member since, and phone number.
+This is the RESTful API for manageing customers. It allows you to create, retrieve, update, and delete customers.
 
 ## Getting Started
-Clone the project locally and open the folder in a container. 
+Clone this repository and open the folder in a container. 
 
 ## API Endpoints
-- 
-A list of all API endpoints, their functions, request methods (GET, POST, PUT, DELETE, etc.), and expected request/response formats.
 
-### Endpoint 1 (e.g., /api/users)
-- **Method:** GET
-- **Description:** Retrieves a list of users.
-- **Request:** N/A
-- **Response:** An array of user objects.
+### POST /customers
+- **Method:** POST
+- **Description:** Creates a customer.
 
-### Endpoint 2 (e.g., /api/users/:id)
+### GET /customers/<int:customer_id>
 - **Method:** GET
-- **Description:** Retrieves a specific user by ID.
-- **Request:** User ID in the URL parameter.
-- **Response:** A user object.
+- **Description:** Read an existing customer with specific customer ID.
+
+### PUT /customers/<int:customer_id>
+- **Method:** PUT
+- **Description:** Update an existing customer.
+
+### GET /customers
+- **Method:** GET
+- **Description:** List existing customers.
+
+### DELETE /customers/<int:customer_id>
+- **Method:** DELETE
+- **Description:** Delete an existing customer with specific customer ID.
 
 ## Error Handling
-Information on how the API handles errors and the format of error messages.
+The API returns a JSON object with a status code and a string message when an error occurs. For example, `{ status.HTTP_404_NOT_FOUND, f"Customer with id '{customer_id}' was not found.", }`.
 
 ## Testing
-If applicable, provide instructions on how to run tests for the API.
-
-## Contributing
-Guidelines for contributing to the project, if applicable.
-
-## License
-Information about the project's license.
+Run 'make test' to execute the test suite.
