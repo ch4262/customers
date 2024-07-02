@@ -83,34 +83,6 @@ class TestCustomerResource(TestCase):
         data = resp.get_json()
         self.assertEqual(data["name"], "Customer Service REST API")
 
-    def test_post_request(self):
-        """It should return 405 Method Not Allowed for POST request"""
-        resp = self.client.post("/")
-        self.assertEqual(resp.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
-        data = resp.get_json()
-        self.assertEqual(data["error"], "Method not allowed. Please use GET method for this endpoint.")
-
-    def test_put_request(self):
-        """It should return 405 Method Not Allowed for PUT request"""
-        resp = self.client.put("/")
-        self.assertEqual(resp.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
-        data = resp.get_json()
-        self.assertEqual(data["error"], "Method not allowed. Please use GET method for this endpoint.")
-
-    def test_delete_request(self):
-        """It should return 405 Method Not Allowed for DELETE request"""
-        resp = self.client.delete("/")
-        self.assertEqual(resp.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
-        data = resp.get_json()
-        self.assertEqual(data["error"], "Method not allowed. Please use GET method for this endpoint.")
-
-    def test_patch_request(self):
-        """It should return 405 Method Not Allowed for PATCH request"""
-        resp = self.client.patch("/")
-        self.assertEqual(resp.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
-        data = resp.get_json()
-        self.assertEqual(data["error"], "Method not allowed. Please use GET method for this endpoint.")
-
     def test_create_customer(self):
         """It should Create a new Customer"""
         test_customer = CustomerFactory()
@@ -220,6 +192,34 @@ class TestSadPaths(TestCase):
     def setUp(self):
         """Runs before each test"""
         self.client = app.test_client()
+
+    def test_post_request(self):
+        """It should return 405 Method Not Allowed for POST request"""
+        resp = self.client.post("/")
+        self.assertEqual(resp.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
+        data = resp.get_json()
+        self.assertEqual(data["error"], "Method not allowed. Please use GET method for this endpoint.")
+
+    def test_put_request(self):
+        """It should return 405 Method Not Allowed for PUT request"""
+        resp = self.client.put("/")
+        self.assertEqual(resp.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
+        data = resp.get_json()
+        self.assertEqual(data["error"], "Method not allowed. Please use GET method for this endpoint.")
+
+    def test_delete_request(self):
+        """It should return 405 Method Not Allowed for DELETE request"""
+        resp = self.client.delete("/")
+        self.assertEqual(resp.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
+        data = resp.get_json()
+        self.assertEqual(data["error"], "Method not allowed. Please use GET method for this endpoint.")
+
+    def test_patch_request(self):
+        """It should return 405 Method Not Allowed for PATCH request"""
+        resp = self.client.patch("/")
+        self.assertEqual(resp.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
+        data = resp.get_json()
+        self.assertEqual(data["error"], "Method not allowed. Please use GET method for this endpoint.")
 
     def test_method_not_allowed(self):
         """It should not Delete a Customer with no ID"""
