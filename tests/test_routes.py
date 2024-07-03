@@ -60,7 +60,9 @@ class TestCustomerResource(TestCase):
             response = self.client.post(BASE_URL, json=test_customer.serialize())
 
             self.assertEqual(
-                response.status_code, status.HTTP_201_CREATED, "Could not create test customer"
+                response.status_code,
+                status.HTTP_201_CREATED,
+                "Could not create test customer",
             )
             new_customer = response.get_json()
             test_customer.id = new_customer["id"]
@@ -68,7 +70,9 @@ class TestCustomerResource(TestCase):
             test_customer.address = new_customer["address"]
             test_customer.email = new_customer["email"]
             test_customer.phone_number = new_customer["phone_number"]
-            test_customer.member_since = date.fromisoformat(new_customer["member_since"])
+            test_customer.member_since = date.fromisoformat(
+                new_customer["member_since"]
+            )
             customers.append(test_customer)
         return customers
 
@@ -104,16 +108,17 @@ class TestCustomerResource(TestCase):
             new_customer["member_since"], test_customer.member_since.isoformat()
         )
 
-        # TODO: Uncomment this code when get_customers is implemented
         # Check that the location header was correct
-        # response = self.client.get(location)
-        # self.assertEqual(response.status_code, status.HTTP_200_OK)
-        # new_customer = response.get_json()
-        # self.assertEqual(new_customer["name"], test_customer.name)
-        # self.assertEqual(new_customer["address"], test_customer.address)
-        # self.assertEqual(new_customer["email"], test_customer.email)
-        # self.assertEqual(new_customer["phone_number"], test_customer.phone_number)
-        # self.assertEqual(new_customer["member_since"], test_customer.member_since.isoformat())
+        response = self.client.get(location)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        new_customer = response.get_json()
+        self.assertEqual(new_customer["name"], test_customer.name)
+        self.assertEqual(new_customer["address"], test_customer.address)
+        self.assertEqual(new_customer["email"], test_customer.email)
+        self.assertEqual(new_customer["phone_number"], test_customer.phone_number)
+        self.assertEqual(
+            new_customer["member_since"], test_customer.member_since.isoformat()
+        )
 
     def test_read_customer(self):
         """It should read an existing Customer"""
@@ -135,8 +140,9 @@ class TestCustomerResource(TestCase):
         self.assertEqual(
             new_customer["member_since"], test_customer.member_since.isoformat()
         )
-        self.assertEqual(new_customer["member_since"], test_customer.member_since.isoformat())
-
+        self.assertEqual(
+            new_customer["member_since"], test_customer.member_since.isoformat()
+        )
 
         # Retrieve the newly created customer
         # self.assertEqual(0, new_customer["id"])
@@ -149,7 +155,9 @@ class TestCustomerResource(TestCase):
         self.assertEqual(retrieved_customer["address"], test_customer.address)
         self.assertEqual(retrieved_customer["email"], test_customer.email)
         self.assertEqual(retrieved_customer["phone_number"], test_customer.phone_number)
-        self.assertEqual(retrieved_customer["member_since"], test_customer.member_since.isoformat())
+        self.assertEqual(
+            retrieved_customer["member_since"], test_customer.member_since.isoformat()
+        )
 
         response = self.client.get(f"{BASE_URL}/-1")
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
@@ -225,28 +233,40 @@ class TestSadPaths(TestCase):
         resp = self.client.post("/")
         self.assertEqual(resp.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
         data = resp.get_json()
-        self.assertEqual(data["error"], "Method not allowed. Please use GET method for this endpoint.")
+        self.assertEqual(
+            data["error"],
+            "Method not allowed. Please use GET method for this endpoint.",
+        )
 
     def test_put_request(self):
         """It should return 405 Method Not Allowed for PUT request"""
         resp = self.client.put("/")
         self.assertEqual(resp.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
         data = resp.get_json()
-        self.assertEqual(data["error"], "Method not allowed. Please use GET method for this endpoint.")
+        self.assertEqual(
+            data["error"],
+            "Method not allowed. Please use GET method for this endpoint.",
+        )
 
     def test_delete_request(self):
         """It should return 405 Method Not Allowed for DELETE request"""
         resp = self.client.delete("/")
         self.assertEqual(resp.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
         data = resp.get_json()
-        self.assertEqual(data["error"], "Method not allowed. Please use GET method for this endpoint.")
+        self.assertEqual(
+            data["error"],
+            "Method not allowed. Please use GET method for this endpoint.",
+        )
 
     def test_patch_request(self):
         """It should return 405 Method Not Allowed for PATCH request"""
         resp = self.client.patch("/")
         self.assertEqual(resp.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
         data = resp.get_json()
-        self.assertEqual(data["error"], "Method not allowed. Please use GET method for this endpoint.")
+        self.assertEqual(
+            data["error"],
+            "Method not allowed. Please use GET method for this endpoint.",
+        )
 
     def test_method_not_allowed(self):
         """It should not Delete a Customer with no ID"""

@@ -23,5 +23,3 @@ class CustomerFactory(factory.Factory):
     email = factory.Faker("email")
     phone_number = factory.Faker("phone_number")
     member_since = FuzzyDate(date(2000, 1, 1))
-
-    # Todo: Add your other attributes here...

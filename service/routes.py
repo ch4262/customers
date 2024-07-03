@@ -23,7 +23,7 @@ and Delete Customers from the inventory of customers in the CustomerShop
 
 from flask import jsonify, request, url_for, abort
 from flask import current_app as app  # Import Flask application
-from service.models import Customer, DataValidationError
+from service.models import Customer
 from service.common import status  # HTTP Status Codes
 
 
@@ -63,9 +63,7 @@ def handle_root_non_get_requests():
     """Handle non-GET requests to the root URL"""
     app.logger.info("Non-GET request for Root URL")
     return (
-        jsonify(
-            error="Method not allowed. Please use GET method for this endpoint."
-        ),
+        jsonify(error="Method not allowed. Please use GET method for this endpoint."),
         status.HTTP_405_METHOD_NOT_ALLOWED,
     )
 
@@ -98,15 +96,12 @@ def create_customers():
     app.logger.info("Customer with new id [%s] saved!", customer.id)
 
     # Return the location of the new Customer
-    # TODO: uncomment this code when get_customers is implemented
-    # location_url = url_for("get_customers", customer_id=customer.id, _external=True)
-    location_url = "unknown"
+    location_url = url_for("get_customer", customer_id=customer.id, _external=True)
     return (
         jsonify(customer.serialize()),
         status.HTTP_201_CREATED,
         {"Location": location_url},
     )
-
 
 
 ######################################################################
@@ -125,7 +120,6 @@ def get_customer(customer_id):
 
     app.logger.info("Returning customer: %s", customer.name)
     return jsonify(customer.serialize()), status.HTTP_200_OK
-
 
 
 ######################################################################

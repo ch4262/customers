@@ -96,7 +96,6 @@ class TestCustomer(TestCase):
         self.assertEqual(data.phone_number, customer.phone_number)
         self.assertEqual(data.member_since, customer.member_since)
 
-
     def test_update_a_customer(self):
         """It should Update a Customer"""
         customer = CustomerFactory()
@@ -162,7 +161,9 @@ class TestCustomer(TestCase):
         self.assertIn("phone_number", data)
         self.assertEqual(data["phone_number"], customer.phone_number)
         self.assertIn("member_since", data)
-        self.assertEqual(date.fromisoformat(data["member_since"]), customer.member_since)
+        self.assertEqual(
+            date.fromisoformat(data["member_since"]), customer.member_since
+        )
 
     def test_deserialize_a_customer(self):
         """It should de-serialize a Customer"""
@@ -175,7 +176,9 @@ class TestCustomer(TestCase):
         self.assertEqual(customer.address, data["address"])
         self.assertEqual(customer.email, data["email"])
         self.assertEqual(customer.phone_number, data["phone_number"])
-        self.assertEqual(customer.member_since, date.fromisoformat(data["member_since"]))
+        self.assertEqual(
+            customer.member_since, date.fromisoformat(data["member_since"])
+        )
 
     def test_deserialize_missing_data(self):
         """It should not deserialize a Customer with missing data"""
