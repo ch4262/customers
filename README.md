@@ -22,7 +22,7 @@ Clone this repository and open the folder in a container.
 
 ### GET /customers
 - **Method:** GET
-- **Description:** List existing customers.
+- **Description:** List existing customers and query customer attributes like name, email, address, phone number and member since
 
 ### DELETE /customers/<int:customer_id>
 - **Method:** DELETE
