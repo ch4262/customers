@@ -314,11 +314,6 @@ class TestCustomerResource(TestCase):
         suspended_customer = response.get_json()
         self.assertEqual(suspended_customer["status"], 'suspended')
 
-    def test_suspend_non_existing_customer(self):
-        """It should return an error when suspending a customer that does not exist"""
-        response = self.client.put("/customers/0/suspend")
-        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-
 
 ######################################################################
 #  T E S T   S A D   P A T H S
@@ -369,6 +364,11 @@ class TestSadPaths(TestCase):
             data["error"],
             "Method not allowed. Please use GET method for this endpoint.",
         )
+
+    def test_suspend_non_existing_customer(self):
+        """It should return an error when suspending a customer that does not exist"""
+        response = self.client.put("/customers/0/suspend")
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_method_not_allowed(self):
         """It should not Delete a Customer with no ID"""
