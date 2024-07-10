@@ -21,6 +21,7 @@ This service implements a REST API that allows you to Create, Read, Update
 and Delete Customers from the inventory of customers in the CustomerShop
 """
 
+from datetime import date
 from flask import jsonify, request, url_for, abort
 from flask import current_app as app  # Import Flask application
 from service.models import Customer
@@ -162,15 +163,39 @@ def update_customers(customer_id):
 def list_customers():
     """List customers"""
     app.logger.info("Request for customer list")
+
     customers = []
 
-    customers = Customer.all()
+    # Parse any arguments from the query string
+    name = request.args.get("name")
+    address = request.args.get("address")
+    email = request.args.get("email")
+    phone_number = request.args.get("phone_number")
+    member_since = request.args.get("member_since")
 
-    if not customers:
-        abort(status.HTTP_404_NOT_FOUND, "No customers found.")
+    if name:
+        app.logger.info("Find by name: %s", name)
+        customers = Customer.find_by_name(name)
+    elif address:
+        app.logger.info("Find by address: %s", address)
+        customers = Customer.find_by_address(address)
+    elif email:
+        app.logger.info("Find by email: %s", address)
+        customers = Customer.find_by_email(email)
+    elif phone_number:
+        app.logger.info("Find by phone number: %s", phone_number)
+        customers = Customer.find_by_phone(phone_number)
+    elif member_since:
+        app.logger.info("Find by member_since: %s", member_since)
+        # Convert the member_since parameter to a date using fromisoformat
+        member_since_date = date.fromisoformat(member_since)
+        customers = Customer.find_by_member_since(member_since_date)
+    else:
+        app.logger.info("Find all")
+        customers = Customer.all()
 
     results = [customer.serialize() for customer in customers]
-    app.logger.info("Returning %d customers", len(customers))
+    app.logger.info("Returning %d customers", len(results))
     return jsonify(results), status.HTTP_200_OK
 
 
