@@ -42,6 +42,7 @@ class Customer(db.Model):
     last_updated = db.Column(
         db.DateTime, default=db.func.now(), onupdate=db.func.now(), nullable=False
     )
+    status = db.Column(db.String(20), nullable=False, default="active")
 
     def __repr__(self):
         return f"<Customer {self.name} id=[{self.id}]>"
@@ -94,6 +95,7 @@ class Customer(db.Model):
             "email": self.email,
             "phone_number": self.phone_number,
             "member_since": self.member_since.isoformat(),
+            "status": self.status,
         }
 
     def deserialize(self, data):

@@ -217,6 +217,30 @@ class TestCustomerResource(TestCase):
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(len(response.data), 0)
 
+    # ----------------------------------------------------------
+    # TEST SUSPEND
+    # ----------------------------------------------------------
+    def test_suspend_customer(self):
+        """It should suspend a customer's account"""
+        test_customer = CustomerFactory()
+        logging.debug("Test Customer: %s", test_customer.serialize())
+        response = self.client.post(BASE_URL, json=test_customer.serialize())
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        new_customer = response.get_json()
+        new_customer_id = new_customer["id"]
+
+        response = self.client.post(f"/customers/{new_customer_id}/suspend")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        response = self.client.get(f"{BASE_URL}/{new_customer_id}")
+        suspended_customer = response.get_json()
+        self.assertEqual(suspended_customer["status"], 'suspended')
+
+    def test_suspend_non_existing_customer(self):
+        """It should return an error when suspending a customer that does not exist"""
+        response = self.client.post("/customers/0/suspend")
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
 
 ######################################################################
 #  T E S T   S A D   P A T H S
