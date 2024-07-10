@@ -6,6 +6,7 @@ import os
 import logging
 from unittest import TestCase
 from datetime import date
+from urllib.parse import quote_plus
 from wsgi import app
 from service.common import status
 from service.models import db, Customer
@@ -217,6 +218,83 @@ class TestCustomerResource(TestCase):
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(len(response.data), 0)
 
+    def test_query_by_name(self):
+        """It should Query Customers by name"""
+        customers = self._create_customer(5)
+        test_name = customers[0].name
+        name_count = len([customer for customer in customers if customer.name == test_name])
+        response = self.client.get(
+            BASE_URL, query_string=f"name={quote_plus(test_name)}"
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        data = response.get_json()
+        self.assertEqual(len(data), name_count)
+        # check the data just to be sure
+        for customer in data:
+            self.assertEqual(customer["name"], test_name)
+
+    def test_query_by_address(self):
+        """It should Query Customers by address"""
+        customers = self._create_customer(5)
+        test_address = customers[0].address
+        address_count = len([customer for customer in customers if customer.address == test_address])
+        response = self.client.get(
+            BASE_URL, query_string=f"address={quote_plus(test_address)}"
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        data = response.get_json()
+        self.assertEqual(len(data), address_count)
+        # check the data just to be sure
+        for customer in data:
+            self.assertEqual(customer["address"], test_address)
+
+    def test_query_by_email(self):
+        """It should Query Customers by email"""
+        customers = self._create_customer(5)
+        test_email = customers[0].email
+        email_count = len([customer for customer in customers if customer.email == test_email])
+        response = self.client.get(
+            BASE_URL, query_string=f"email={quote_plus(test_email)}"
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        data = response.get_json()
+        self.assertEqual(len(data), email_count)
+        # check the data just to be sure
+        for customer in data:
+            self.assertEqual(customer["email"], test_email)
+
+    def test_query_by_phone_number(self):
+        """It should Query Customers by phone_number"""
+        customers = self._create_customer(5)
+        test_phone_number = customers[0].phone_number
+        phone_number_count = len([customer for customer in customers if customer.phone_number == test_phone_number])
+        response = self.client.get(
+            BASE_URL, query_string=f"phone_number={quote_plus(test_phone_number)}"
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        data = response.get_json()
+        self.assertEqual(len(data), phone_number_count)
+        # check the data just to be sure
+        for customer in data:
+            self.assertEqual(customer["phone_number"], test_phone_number)
+
+    def test_query_by_member_since(self):
+        """It should Query Customers by member_since"""
+        customers = self._create_customer(5)
+        test_member_since = customers[0].member_since
+        member_since_count = len([customer for customer in customers if customer.member_since == test_member_since])
+        # Convert date to string
+        member_since_str = test_member_since.isoformat()
+        response = self.client.get(
+            BASE_URL, query_string=f"member_since={quote_plus(member_since_str)}"
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        data = response.get_json()
+        self.assertEqual(len(data), member_since_count)
+        # check the data just to be sure
+        for customer in data:
+            self.assertEqual(customer["member_since"], member_since_str)
+
     # ----------------------------------------------------------
     # TEST SUSPEND
     # ----------------------------------------------------------
@@ -297,7 +375,7 @@ class TestSadPaths(TestCase):
         response = self.client.delete(f"{BASE_URL}")
         self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
 
-    def test_create_pet_no_content_type(self):
+    def test_create_customer_no_content_type(self):
         """It should not Create a Customer with no content type"""
         response = self.client.post(BASE_URL)
         self.assertEqual(response.status_code, status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)

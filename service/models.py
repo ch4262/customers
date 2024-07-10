@@ -149,3 +149,43 @@ class Customer(db.Model):
         """
         logger.info("Processing name query for %s ...", name)
         return cls.query.filter(cls.name == name)
+
+    @classmethod
+    def find_by_address(cls, address):
+        """Returns all Customers with the given address
+
+        Args:
+            name (string): the address of the Customers you want to match
+        """
+        logger.info("Processing address query for %s ...", address)
+        return cls.query.filter(cls.address == address)
+
+    @classmethod
+    def find_by_email(cls, email):
+        """Returns all Customers with the given email
+
+        Args:
+            name (string): the email of the Customers you want to match
+        """
+        logger.info("Processing address query for %s ...", email)
+        return cls.query.filter(cls.email == email)
+
+    @classmethod
+    def find_by_phone(cls, phone_number):
+        """Returns all Customers with the given phone number
+
+        Args:
+            name (string): the phone number of the Customers you want to match
+        """
+        logger.info("Processing phone query for %s ...", phone_number)
+        return cls.query.filter(cls.phone_number == phone_number)
+
+    @classmethod
+    def find_by_member_since(cls, member_since):
+        """Returns all Customers with the given membership date
+
+        Args:
+            name (string): the date of the Customers you want to match
+        """
+        logger.info("Processing address query for %s ...", member_since)
+        return cls.query.filter(cls.member_since == member_since)
