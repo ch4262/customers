@@ -307,7 +307,7 @@ class TestCustomerResource(TestCase):
         new_customer = response.get_json()
         new_customer_id = new_customer["id"]
 
-        response = self.client.post(f"/customers/{new_customer_id}/suspend")
+        response = self.client.put(f"/customers/{new_customer_id}/suspend")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         response = self.client.get(f"{BASE_URL}/{new_customer_id}")
@@ -316,7 +316,7 @@ class TestCustomerResource(TestCase):
 
     def test_suspend_non_existing_customer(self):
         """It should return an error when suspending a customer that does not exist"""
-        response = self.client.post("/customers/0/suspend")
+        response = self.client.put("/customers/0/suspend")
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
 

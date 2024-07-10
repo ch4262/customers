@@ -219,7 +219,7 @@ def delete_customers(customer_id):
 ############################################################
 # SUSPEND A CUSTOMER
 ############################################################
-@app.route("/customers/<int:customer_id>/suspend", methods=["POST"])
+@app.route("/customers/<int:customer_id>/suspend", methods=["PUT"])
 def suspend_customer(customer_id):
     """Suspend a customer's account"""
     app.logger.info("Request to suspend a customer with id [%s]..", customer_id)
@@ -235,7 +235,7 @@ def suspend_customer(customer_id):
             f"Customer with id '{customer_id}' was not found.",
         )
 
-    return {}, status.HTTP_200_OK
+    return jsonify(customer.serialize()), status.HTTP_200_OK
 
 
 ######################################################################

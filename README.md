@@ -28,8 +28,8 @@ Clone this repository and open the folder in a container.
 - **Method:** DELETE
 - **Description:** Delete an existing customer with specific customer ID.
 
-### /customers/<int:customer_id>/suspend
-- **Method:** POST
+### PUT /customers/<int:customer_id>/suspend
+- **Method:** PUT
 - **Description:** Suspend an existing customer with specific customer ID.
 
 ## Error Handling
