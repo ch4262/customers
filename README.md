@@ -1,6 +1,6 @@
 # Customers API
 
-[![Build Status](https://github.com/CSCI-GA-2820-SU24-001/customers/actions/workflows/workflow.yml/badge.svg)](https://github.com/CSCI-GA-2820-SU24-001/customers/actions)
+[![Build Status](https://github.com/CSCI-GA-2820-SU24-001/customers/actions/workflows/ci.yml/badge.svg)](https://github.com/CSCI-GA-2820-SU24-001/customers/actions)
 
 ## Introduction
 This is the RESTful API for manageing customers. It allows you to create, retrieve, update, and delete customers.
