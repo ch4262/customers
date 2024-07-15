@@ -216,11 +216,31 @@ def delete_customers(customer_id):
     return {}, status.HTTP_204_NO_CONTENT
 
 
+############################################################
+# SUSPEND A CUSTOMER
+############################################################
+@app.route("/customers/<int:customer_id>/suspend", methods=["PUT"])
+def suspend_customer(customer_id):
+    """Suspend a customer's account"""
+    app.logger.info("Request to suspend a customer with id [%s]..", customer_id)
+
+    customer = Customer.find(customer_id)
+    if customer:
+        app.logger.info("Customer with ID: %d found.", customer.id)
+        customer.status = 'suspended'
+        customer.update()
+    else:
+        abort(
+            status.HTTP_404_NOT_FOUND,
+            f"Customer with id '{customer_id}' was not found.",
+        )
+
+    return jsonify(customer.serialize()), status.HTTP_200_OK
+
+
 ######################################################################
 # Checks the ContentType of a request
 ######################################################################
-
-
 def check_content_type(content_type) -> None:
     """Checks that the media type is correct"""
     if "Content-Type" not in request.headers:

@@ -295,6 +295,25 @@ class TestCustomerResource(TestCase):
         for customer in data:
             self.assertEqual(customer["member_since"], member_since_str)
 
+    # ----------------------------------------------------------
+    # TEST SUSPEND
+    # ----------------------------------------------------------
+    def test_suspend_customer(self):
+        """It should suspend a customer's account"""
+        test_customer = CustomerFactory()
+        logging.debug("Test Customer: %s", test_customer.serialize())
+        response = self.client.post(BASE_URL, json=test_customer.serialize())
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        new_customer = response.get_json()
+        new_customer_id = new_customer["id"]
+
+        response = self.client.put(f"/customers/{new_customer_id}/suspend")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        response = self.client.get(f"{BASE_URL}/{new_customer_id}")
+        suspended_customer = response.get_json()
+        self.assertEqual(suspended_customer["status"], 'suspended')
+
 
 ######################################################################
 #  T E S T   S A D   P A T H S
@@ -345,6 +364,11 @@ class TestSadPaths(TestCase):
             data["error"],
             "Method not allowed. Please use GET method for this endpoint.",
         )
+
+    def test_suspend_non_existing_customer(self):
+        """It should return an error when suspending a customer that does not exist"""
+        response = self.client.put("/customers/0/suspend")
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_method_not_allowed(self):
         """It should not Delete a Customer with no ID"""
