@@ -185,6 +185,23 @@ class TestCustomerResource(TestCase):
         updated_customer = response.get_json()
         self.assertEqual(updated_customer["name"], "Ryan")
 
+    def test_update_non_existing_customer(self):
+        """It should not update a non-existent Customer"""
+
+        test_customer = CustomerFactory()
+        response = self.client.post(BASE_URL, json=test_customer.serialize())
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        # Get the new customer ID and increment to create a non-existent ID
+        new_customer = response.get_json()
+        new_customer_id = new_customer["id"]
+        non_existent_id = new_customer_id + 1
+
+        # Attempt to update a non-existent customer
+        new_customer["name"] = "Ryan"
+        response = self.client.put(f"{BASE_URL}/{non_existent_id}", json=new_customer)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
     # ----------------------------------------------------------
     # TEST LIST
     # ----------------------------------------------------------
