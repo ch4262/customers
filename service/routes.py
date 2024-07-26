@@ -31,18 +31,11 @@ from service.common import status  # HTTP Status Codes
 ######################################################################
 # GET INDEX
 ######################################################################
-# @app.route("/")
-# def index():
-#     """Root URL response"""
-#     app.logger.info("Request for Root URL")
-#     return (
-#         jsonify(
-#             name="Customer Service REST API",
-#             version="1.0",
-#             paths=url_for("list_customers", _external=True),
-#         ),
-#         status.HTTP_200_OK,
-#     )
+@app.route("/")
+def index():
+    """Root URL response"""
+    app.logger.info("Request for Root URL")
+    return app.send_static_file("index.html")
 
 
 @app.route("/", methods=["GET"])
