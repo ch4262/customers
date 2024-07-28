@@ -44,3 +44,48 @@ Scenario: Create a Customer
     And I should see "2022-06-16" in the "Since" field
     And I should see "Active" in the "Status" dropdown
 
+Scenario: Update a Customer
+    When I visit the "Home Page"
+    And I set the "Name" to "Fluffy"
+    And I press the "Search" button
+    Then I should see the message "Success"
+    And I should see "Fluffy" in the "Name" field
+    And I should see "123 Pet Lane, Dogtown" in the "Address" field
+    And I should see "fluffy@example.com" in the "Email" field
+    And I should see "555-1234" in the "Phone" field
+    And I should see "2021-05-12" in the "Since" field
+    And I should see "Active" in the "Status" dropdown
+    When I change "Name" to "Loki"
+    And I press the "Update" button
+    Then I should see the message "Success"
+    When I copy the "Id" field
+    And I press the "Clear" button
+    And I paste the "Id" field
+    And I press the "Retrieve" button
+    Then I should see the message "Success"
+    And I should see "Loki" in the "Name" field
+    When I press the "Clear" button
+    And I press the "Search" button
+    Then I should see the message "Success"
+    And I should see "Loki" in the results
+    And I should not see "Fluffy" in the results
+
+Scenario: Delete a Customer
+    When I visit the "Home Page"
+    And I set the "Name" to "Fluffy"
+    And I press the "Search" button
+    Then I should see the message "Success"
+    And I should see "Fluffy" in the "Name" field
+    And I should see "123 Pet Lane, Dogtown" in the "Address" field
+    And I should see "fluffy@example.com" in the "Email" field
+    And I should see "555-1234" in the "Phone" field
+    And I should see "2021-05-12" in the "Since" field
+    And I should see "Active" in the "Status" dropdown
+    When I change "Name" to "Fluffy"
+    And I press the "Delete" button
+    Then I should see the message "Customer has been Deleted!"
+    When I copy the "Id" field
+    And I press the "Clear" button
+    And I paste the "Id" field
+    And I press the "Retrieve" button
+    Then I should see the message "404 Not Found"
