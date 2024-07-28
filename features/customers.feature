@@ -89,3 +89,32 @@ Scenario: Delete a Customer
     And I paste the "Id" field
     And I press the "Retrieve" button
     Then I should see the message "404 Not Found"
+
+Scenario: Read a Customer
+    When I visit the "Home Page"
+    And I set the "Name" to "Sai"
+    And I set the "Address" to "80 Court House"
+    And I set the "Email" to "sb@nyu.edu"
+    And I set the "Phone" to "5512298011"
+    And I select "Active" in the "Status" dropdown
+    And I set the "Since" to "06-16-2022"
+    And I press the "Create" button
+    Then I should see the message "Success"
+    When I copy the "Id" field
+    And I press the "Retrieve" button
+    Then I should see the message "Success"
+    And I should see "Sai" in the "Name" field
+    And I should see "80 Court House" in the "Address" field
+    And I should see "sb@nyu.edu" in the "Email" field
+    And I should see "5512298011" in the "Phone" field
+    And I should see "2022-06-16" in the "Since" field
+    And I should see "Active" in the "Status" dropdown
+
+Scenario: List all Customers
+    When I visit the "Home Page"
+    And I press the "Search" button
+    Then I should see the message "Success"
+    And I should see "Fluffy" in the results
+    And I should see "Whiskers" in the results
+    And I should see "Rex" in the results
+    And I should see "Tweety" in the results
