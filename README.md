@@ -53,5 +53,3 @@ Run 'make test' to execute the test suite.
   - Verify that the persistent volume was created: kubectl get pv
   - Apply redis to the cluster: kubectl apply -f k8s/service.yaml
 - **Delete a service:** kubectl delete -f k8s/
-- **Create a customer namespace (optional):** kubectl create namespace customer
-- **Enter the customer namespace (optional):** kubectl config set-context --current --namespace customer
