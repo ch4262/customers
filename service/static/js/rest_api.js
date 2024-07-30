@@ -191,7 +191,9 @@ $(function () {
 
         let name = $("#customer_name").val();
         let address = $("#customer_address").val();
+        let email = $("#customer_email").val();
         let phone_number = $("#customer_phone").val();
+        let member_since = $("#customer_since").val();
 
         let queryString = ""
 
@@ -205,11 +207,25 @@ $(function () {
                 queryString += 'address=' + address
             }
         }
+        if (email) {
+            if (queryString.length > 0) {
+                queryString += '&email=' + email
+            } else {
+                queryString += 'email=' + email
+            }
+        }
         if (phone_number) {
             if (queryString.length > 0) {
                 queryString += '&phone_number=' + phone_number
             } else {
                 queryString += 'phone_number=' + phone_number
+            }
+        }
+        if (member_since) {
+            if (queryString.length > 0) {
+                queryString += '&member_since=' + member_since
+            } else {
+                queryString += 'member_since=' + member_since
             }
         }
 
