@@ -29,6 +29,15 @@ from service.common import status  # HTTP Status Codes
 
 
 ######################################################################
+# GET HEALTH CHECK
+######################################################################
+@app.route("/health")
+def health_check():
+    """Let them know our heart is still beating"""
+    return jsonify(status=200, message="Healthy"), status.HTTP_200_OK
+
+
+######################################################################
 # GET INDEX
 ######################################################################
 @app.route("/")
@@ -220,7 +229,7 @@ def suspend_customer(customer_id):
     customer = Customer.find(customer_id)
     if customer:
         app.logger.info("Customer with ID: %d found.", customer.id)
-        customer.status = 'suspended'
+        customer.status = "suspended"
         customer.update()
     else:
         abort(

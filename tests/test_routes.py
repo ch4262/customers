@@ -89,6 +89,14 @@ class TestCustomerResource(TestCase):
         # data = resp.get_json()
         # self.assertEqual(data["name"], "Customer Service REST API")
 
+    def test_health(self):
+        """It should be healthy"""
+        response = self.client.get("/health")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        data = response.get_json()
+        self.assertEqual(data["status"], 200)
+        self.assertEqual(data["message"], "Healthy")
+
     def test_create_customer(self):
         """It should Create a new Customer"""
         test_customer = CustomerFactory()
@@ -240,7 +248,9 @@ class TestCustomerResource(TestCase):
         """It should Query Customers by name"""
         customers = self._create_customer(5)
         test_name = customers[0].name
-        name_count = len([customer for customer in customers if customer.name == test_name])
+        name_count = len(
+            [customer for customer in customers if customer.name == test_name]
+        )
         response = self.client.get(
             BASE_URL, query_string=f"name={quote_plus(test_name)}"
         )
@@ -255,7 +265,9 @@ class TestCustomerResource(TestCase):
         """It should Query Customers by address"""
         customers = self._create_customer(5)
         test_address = customers[0].address
-        address_count = len([customer for customer in customers if customer.address == test_address])
+        address_count = len(
+            [customer for customer in customers if customer.address == test_address]
+        )
         response = self.client.get(
             BASE_URL, query_string=f"address={quote_plus(test_address)}"
         )
@@ -270,7 +282,9 @@ class TestCustomerResource(TestCase):
         """It should Query Customers by email"""
         customers = self._create_customer(5)
         test_email = customers[0].email
-        email_count = len([customer for customer in customers if customer.email == test_email])
+        email_count = len(
+            [customer for customer in customers if customer.email == test_email]
+        )
         response = self.client.get(
             BASE_URL, query_string=f"email={quote_plus(test_email)}"
         )
@@ -285,7 +299,13 @@ class TestCustomerResource(TestCase):
         """It should Query Customers by phone_number"""
         customers = self._create_customer(5)
         test_phone_number = customers[0].phone_number
-        phone_number_count = len([customer for customer in customers if customer.phone_number == test_phone_number])
+        phone_number_count = len(
+            [
+                customer
+                for customer in customers
+                if customer.phone_number == test_phone_number
+            ]
+        )
         response = self.client.get(
             BASE_URL, query_string=f"phone_number={quote_plus(test_phone_number)}"
         )
@@ -300,7 +320,13 @@ class TestCustomerResource(TestCase):
         """It should Query Customers by member_since"""
         customers = self._create_customer(5)
         test_member_since = customers[0].member_since
-        member_since_count = len([customer for customer in customers if customer.member_since == test_member_since])
+        member_since_count = len(
+            [
+                customer
+                for customer in customers
+                if customer.member_since == test_member_since
+            ]
+        )
         # Convert date to string
         member_since_str = test_member_since.isoformat()
         response = self.client.get(
@@ -330,7 +356,7 @@ class TestCustomerResource(TestCase):
 
         response = self.client.get(f"{BASE_URL}/{new_customer_id}")
         suspended_customer = response.get_json()
-        self.assertEqual(suspended_customer["status"], 'suspended')
+        self.assertEqual(suspended_customer["status"], "suspended")
 
 
 ######################################################################
