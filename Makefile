@@ -59,6 +59,12 @@ cluster-rm: ## Remove a K3D Kubernetes cluster
 	k3d cluster delete
 
 .PHONY: deploy
-depoy: ## Deploy the service on local Kubernetes
+deploy: ## Deploy the service on local Kubernetes
 	$(info Deploying service locally...)
-	kubectl apply -f k8s
+	kubectl apply -f k8s/
+
+.PHONY: knative
+knative: ## Install Knative
+	$(info Installing Knative in the Cluster...)
+	kubectl apply -f https://github.com/knative/serving/releases/download/knative-v1.12.0/serving-crds.yaml
+	kubectl apply -f https://github.com/knative/serving/releases/download/knative-v1.12.0/serving-core.yaml

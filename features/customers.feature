@@ -118,3 +118,19 @@ Scenario: List all Customers
     And I should see "Whiskers" in the results
     And I should see "Rex" in the results
     And I should see "Tweety" in the results
+
+Scenario: Query a Customer by Member Since
+    When I visit the "Home Page"
+    And I set the "Since" to "11-23-2020"
+    And I press the "Search" button
+    Then I should see the message "Success"
+    And I should see "Whiskers" in the "Name" field
+    And I should see "456 Cat St, Meow City" in the "Address" field
+
+Scenario: Query a Customer by Phone No
+    When I visit the "Home Page"
+    And I set the "Phone" to "555-9876"
+    And I press the "Search" button
+    Then I should see the message "Success"
+    And I should see "Rex" in the "Name" field
+    And I should see "555-9876" in the "Phone" field
