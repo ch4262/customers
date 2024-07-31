@@ -134,3 +134,18 @@ Scenario: Query a Customer by Phone No
     Then I should see the message "Success"
     And I should see "Rex" in the "Name" field
     And I should see "555-9876" in the "Phone" field
+
+Scenario: Suspend a customer by Customer Id
+    When I visit the "Home Page"
+    And I set the "Name" to "Rex"
+    And I press the "Search" button
+    Then I should see the message "Success"
+    And I should see "789 Woof Blvd, Barkburg" in the "Address" field
+    And I should see "rex@example.com" in the "Email" field
+    And I should see "555-9876" in the "Phone" field
+    And I should see "2019-07-01" in the "Since" field
+    And I should see "Active" in the "Status" dropdown
+    When I press the "Suspend" button
+    Then I should see the message "Customer has been Suspended!"
+    When I press the "Retrieve" button
+    Then I should see "Suspended" in the "Status" dropdown
